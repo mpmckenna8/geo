@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Mercator projection applied to stuff</title>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */
+			        .subunit-label {
+            fill: white;
+            fill-opacity: 1;
+            font-size: 20px;
+            font-weight: 300;
+            text-anchor: middle;
+        }
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+
+			//Width and height
+			var w = 500;
+			var h = 300;
+
+			//Define map projection
+			var projection = d3.geo.mercator()
+								   .translate([w/2, h/2])
+								   .scale([98900])
+									 .center([ -122.43198394775389,37.76365837331252])
+									;
+
+			//Define path generator
+			var path = d3.geo.path()
+							 .projection(projection);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Load in GeoJSON data
+			d3.json("sfBOScle.geojson", function(json) {
+
+				//Bind data and create one path per GeoJSON feature
+				svg.selectAll("path")
+				   .data(json.features)
+				   .enter()
+				   .append("path")
+					 .attr("class",function(d){
+						console.dir(d)
+						return "districts"
+					})
+				   .attr("d", path)
+				   .style("fill", "purple");
+
+					    svg.selectAll("path")
+                .data(json)
+								.enter()
+								.append("path").append("text")
+                    .attr("class", "subunit-label")
+                    .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+                    .attr("dy", ".8em")
+                    .text(function(d) { return d.properties.DISTRICT; });
+
+
+//console.dir(json.features)
+
+			});
+
+		</script>
+	</body>
+</html>
