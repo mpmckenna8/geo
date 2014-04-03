@@ -7,7 +7,7 @@
   <script src="http://d3js.org/topojson.v1.min.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */
-			        .subunit-label {
+			        .label {
             fill: white;
             fill-opacity: 1;
             font-size: 20px;
@@ -56,16 +56,18 @@
 				   .attr("d", path)
 				   .style("fill", "purple");
 
+			d3.json("labelSFbos.geojson",function(labs){
 					    svg.selectAll("path")
-                .data(json)
+                .data(labs.features)
 								.enter()
-								.append("path").append("text")
-                    .attr("class", "subunit-label")
-                    .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+								.append("path")
+								.append("text")
+                    .attr("class", "label")
+                    .attr("d",path)
                     .attr("dy", ".8em")
-                    .text(function(d) { return d.properties.DISTRICT; });
+                    .text(function(d) { return d.properties.district; });
 
-
+						});
 //console.dir(json.features)
 
 			});
