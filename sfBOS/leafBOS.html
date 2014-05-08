@@ -9,6 +9,10 @@
 
         <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
 <script type="text/javascript" src="./sfbosBADorig.geojson" ></script>
+<script type="text/javascript" src="./labelSFbos.geojson" ></script>
+<script src="http://leaflet.github.io/Leaflet.label/leaflet.label.js"></script>
+<link rel="stylesheet" href="http://leaflet.github.io/Leaflet.label/leaflet.label.css" />
+
         <style type="text/css">
             #map {
                 width: 600px;
@@ -18,7 +22,21 @@
                 margin-left:auto;
             }
 
-
+            .distPoly {
+              opacity:1;
+              fill:purple;
+            }
+            .leaflet-label {
+              background:none;
+               left: -22px;
+              border:none;
+              background-clip:none;
+            }
+            .leaflet-label:before {
+	border-right: 0px solid black;
+	border-right-color: inherit;
+	left: -10px;
+}
         </style>
     </head>
     <body onload="initialize()">
@@ -44,20 +62,88 @@
                                         layers:toner
                                         })
 
+function onEachFeature(feat){
+  return console.log(feat.properties)
+}
 
-                    var bosBords = L.geoJson().addTo(map);
-                    bosBords.addData(bords)
-                    .setStyle(
-                      {fillColor:'green',
-                      color:'pink'}
+                    var bosBords = L.geoJson(bords,{onEachFeature:onEachFeature}).addTo(map);
 
-                    );
+                    bosBords.addData(bords,{onEachFeature:onEachFeature})
+                    .setStyle(function(feat){
+                    //  console.log(feat.properties.DISTRICT);
+                      if(feat.properties.DISTRICT === "01"){
+                return      {fillColor:'green',
+                      color:'pink',fillOpacity:.65}}
+                      else if(feat.properties.DISTRICT === "02"){
+                return      {fillColor:'blue',
+                      color:'pink',fillOpacity:.65}}
+                      else if(feat.properties.DISTRICT === "03"){
+                return      {fillColor:'purple',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "04"){
+                return      {fillColor:'#cab2d6',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "05"){
+                return      {fillColor:'#ff7f00',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "06"){
+                return      {fillColor:'#fdbf6f',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "07"){
+                return      {fillColor:'#e31a1c',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "08"){
+                return      {fillColor:'pink',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "09"){
+                return      {fillColor:'#a6cee3',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "10"){
+                return      {fillColor:'#ffff99',
+                      color:'pink',fillOpacity:.7}}
+                      else if(feat.properties.DISTRICT === "11"){
+                return      {fillColor:'#b2df8a',
+                      color:'pink',fillOpacity:.7}}
 
+}
+            )
 
+//Add labels layer
+var labelStyle = {
+    color: 'pink',
+    opacity: 0
+
+};
+
+var labelMarkerOptions = {
+        opacity: 0,
+        fillOpacity: 0,
+        fillColor:'brown'
+};
+
+var labelLayer = L.geoJson(labs, {
+        pointToLayer: function (feature, latlng) {
+                return L.circleMarker(latlng, labelMarkerOptions);
+        },
+        onEachFeature: function (feature, layer) {
+                layer.bindLabel(feature.properties.district, {noHide:true,direction:'right'});
+        }
+});
+labelLayer.eachLayer(function(l) {l.showLabel();});
+map.addLayer(labelLayer);
+layerControl.addOverlay(labelLayer, 'boslab');
+}
+//L.geoJson(labs,{onEachFeature:addText}).addTo(map);
+
+/*
+.onEachFeature(function(feat, layer){
+  return {className:'distPoly'}
+})
+*/
               //       L.control.layers(bases).addTo(map);
 
 //console.log()bords.features.properties.DISTRICT)).map();
-            }
+
 
             // ([37.75, -122.45], 12)
 

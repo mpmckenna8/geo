@@ -18,7 +18,7 @@
 	</head>
 	<body>
 		<script type="text/javascript">
-
+//want to let's make a map style this thing....
 
 			//Width and height
 			var w = 500;
@@ -50,27 +50,32 @@
 				   .enter()
 				   .append("path")
 					 .attr("class",function(d){
-						console.dir(d)
+			//			console.dir(d)
 						return "districts"
 					})
 				   .attr("d", path)
 				   .style("fill", "purple");
 
-			d3.json("labelSFbos.geojson",function(labs){
-					    svg.selectAll("path")
-                .data(labs.features)
-								.enter()
-								.append("path")
-								.append("text")
-                    .attr("class", "label")
-                    .attr("d",path)
-                    .attr("dy", ".8em")
-                    .text(function(d) { return d.properties.district; });
+d3.json("labelSFbosD3.geojson",function(labs){
+				svg.selectAll("path")
+					.datum(labs.features)
+					.enter()
+					.append("path")
+					.attr("d",path)
+					.append("text")
+							.attr("class", "label")
 
-						});
+							.attr("dy", ".8em")
+							.text(function(d) {
+								console.log(d.properties)
+								return d.properties.district; })
+								.style("fill", "orange");
+
+			});
 //console.dir(json.features)
 
 			});
+
 
 		</script>
 	</body>
